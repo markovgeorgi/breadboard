@@ -17,6 +17,8 @@ import {
   makeTestFixtures,
   makeFreshGraph as makeTestGraph,
 } from "../../helpers/index.js";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
+import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 
 /**
  * Sets up flowgen test fixtures using the composable pattern.
@@ -32,8 +34,16 @@ function setupFlowgenTest(flowGeneratorMock: Partial<FlowGenerator>) {
     flowGeneratorMock,
   });
 
-  FlowgenActions.bind({ controller, services });
-  GraphActions.bind({ controller, services });
+  FlowgenActions.bind({
+    controller,
+    services,
+    env: createMockEnvironment(defaultRuntimeFlags),
+  });
+  GraphActions.bind({
+    controller,
+    services,
+    env: createMockEnvironment(defaultRuntimeFlags),
+  });
 
   return { controller, services, mocks };
 }
@@ -110,7 +120,11 @@ suite("Flowgen Actions", () => {
       withEditor: false,
     });
 
-    FlowgenActions.bind({ controller, services });
+    FlowgenActions.bind({
+      controller,
+      services,
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
 
     const result = await FlowgenActions.generate("test intent");
 
@@ -185,8 +199,16 @@ suite("onFlowgenGenerate", () => {
     (controller.run.renderer as unknown as Record<string, unknown>).reset ??=
       () => {};
 
-    FlowgenActions.bind({ controller, services });
-    GraphActions.bind({ controller, services });
+    FlowgenActions.bind({
+      controller,
+      services,
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
+    GraphActions.bind({
+      controller,
+      services,
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
 
     return { controller, services, mocks, runMocks };
   }

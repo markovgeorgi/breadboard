@@ -24,6 +24,8 @@ import {
 import { coordination } from "../../../../src/sca/coordination.js";
 import { StateEvent } from "../../../../src/ui/events/events.js";
 import { setDOM, unsetDOM } from "../../../fake-dom.js";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
+import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 
 /**
  * Creates a mock controller with the given graph state.
@@ -76,6 +78,7 @@ suite("Board Actions", () => {
             googleDriveBoardServer: makeMockBoardServer({ canSave: true }),
           } as unknown as AppServices,
           controller,
+          env: createMockEnvironment(defaultRuntimeFlags),
         });
 
         await assert.rejects(async () => boardActions.save(), {
@@ -103,6 +106,7 @@ suite("Board Actions", () => {
             googleDriveBoardServer: makeMockBoardServer({ canSave: true }),
           } as unknown as AppServices,
           controller,
+          env: createMockEnvironment(defaultRuntimeFlags),
         });
 
         const result = await boardActions.save();
@@ -127,6 +131,7 @@ suite("Board Actions", () => {
             googleDriveBoardServer: makeMockBoardServer({ canSave: true }),
           } as unknown as AppServices,
           controller,
+          env: createMockEnvironment(defaultRuntimeFlags),
         });
 
         const result = await boardActions.save();
@@ -151,6 +156,7 @@ suite("Board Actions", () => {
             googleDriveBoardServer: makeMockBoardServer({ canSave: false }),
           } as unknown as AppServices,
           controller,
+          env: createMockEnvironment(defaultRuntimeFlags),
         });
 
         const result = await boardActions.save();
@@ -178,6 +184,7 @@ suite("Board Actions", () => {
             googleDriveBoardServer: mockBoardServer,
           } as unknown as AppServices,
           controller,
+          env: createMockEnvironment(defaultRuntimeFlags),
         });
 
         const result = await boardActions.save();
@@ -207,6 +214,7 @@ suite("Board Actions", () => {
             googleDriveBoardServer: mockBoardServer,
           } as unknown as AppServices,
           controller,
+          env: createMockEnvironment(defaultRuntimeFlags),
         });
 
         await boardActions.save({ start: "Saving...", end: "Saved!" });
@@ -243,6 +251,7 @@ suite("Board Actions", () => {
             googleDriveBoardServer: mockBoardServer,
           } as unknown as AppServices,
           controller,
+          env: createMockEnvironment(defaultRuntimeFlags),
         });
 
         const result = await boardActions.save();
@@ -275,6 +284,7 @@ suite("Board Actions", () => {
           googleDriveBoardServer: mockBoardServer,
         } as unknown as AppServices,
         controller,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await boardActions.saveAs(testGraph, {
@@ -319,6 +329,7 @@ suite("Board Actions", () => {
           googleDriveBoardServer: mockBoardServer,
         } as unknown as AppServices,
         controller,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await boardActions.saveAs(testGraph, {
@@ -353,6 +364,7 @@ suite("Board Actions", () => {
           googleDriveBoardServer: mockBoardServer,
         } as unknown as AppServices,
         controller,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await boardActions.deleteBoard(
@@ -408,6 +420,7 @@ suite("Board Actions", () => {
           googleDriveBoardServer: mockBoardServer,
         } as unknown as AppServices,
         controller,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await boardActions.remix(
@@ -447,6 +460,7 @@ suite("Board Actions", () => {
           googleDriveBoardServer: makeMockBoardServer({}),
         } as unknown as AppServices,
         controller,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       // Request a URL that returns empty graph from mocked store
@@ -492,6 +506,7 @@ suite("Board Actions", () => {
           googleDriveBoardServer: mockBoardServer,
         } as unknown as AppServices,
         controller,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await boardActions.remix(
@@ -539,6 +554,7 @@ suite("Board Actions", () => {
           ...controller,
           board: { main: mockBoardMain },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       // Empty string is invalid
@@ -616,6 +632,7 @@ suite("Board Actions", () => {
       boardActions.bind({
         services: { graphStore } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       boardActions.close();
@@ -673,6 +690,7 @@ suite("Board Actions", () => {
       Board.bind({
         services: {} as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Board.showNewerVersionSnackbar();
@@ -708,6 +726,7 @@ suite("Board Actions", () => {
       Board.bind({
         services: {} as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Board.handleSaveStatus({
@@ -735,6 +754,7 @@ suite("Board Actions", () => {
       Board.bind({
         services: {} as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Board.handleSaveStatus({
@@ -762,6 +782,7 @@ suite("Board Actions", () => {
       Board.bind({
         services: {} as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Board.handleSaveStatus({
@@ -793,6 +814,7 @@ suite("Board Actions", () => {
       Board.bind({
         services: {} as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Board.handleSaveStatus({
@@ -824,6 +846,7 @@ suite("Board Actions", () => {
       Board.bind({
         services: {} as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Board.handleSaveStatus(undefined);
@@ -874,6 +897,7 @@ suite("Board Actions", () => {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const evt = new StateEvent({
@@ -918,6 +942,7 @@ suite("Board Actions", () => {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const evt = new StateEvent({
@@ -950,6 +975,7 @@ suite("Board Actions", () => {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const evt = new StateEvent({
@@ -981,6 +1007,7 @@ suite("Board Actions", () => {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const evt = new StateEvent({
@@ -1016,6 +1043,7 @@ suite("Board Actions", () => {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const evt = new StateEvent({
@@ -1053,6 +1081,7 @@ suite("Board Actions", () => {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Board.onUndo();
@@ -1082,6 +1111,7 @@ suite("Board Actions", () => {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Board.onUndo();
@@ -1111,6 +1141,7 @@ suite("Board Actions", () => {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Board.onUndo();
@@ -1142,6 +1173,7 @@ suite("Board Actions", () => {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Board.onRedo();
@@ -1171,6 +1203,7 @@ suite("Board Actions", () => {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Board.onRedo();
@@ -1193,6 +1226,7 @@ suite("Board Actions", () => {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
         controller: mockController as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const replacement = { nodes: [], edges: [] };

@@ -13,6 +13,8 @@ import type { AppController } from "../../../../src/sca/controller/controller.js
 import type { IntegrationState } from "../../../../src/ui/types/state-types.js";
 import { IntegrationManagerService } from "../../../../src/sca/services/integration-managers.js";
 import { ok } from "@breadboard-ai/utils";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
+import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 
 // =============================================================================
 // Helpers
@@ -128,7 +130,11 @@ suite("Integration Actions", () => {
         integrationManagers: managers,
       });
 
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
       await Integration.syncFromGraph();
 
       assert.strictEqual(
@@ -169,7 +175,11 @@ suite("Integration Actions", () => {
       (services as unknown as Record<string, unknown>).mcpClientManager =
         mockClientManager;
 
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
       await Integration.syncFromGraph();
 
       // Manager should have been created.
@@ -212,7 +222,11 @@ suite("Integration Actions", () => {
       (services as unknown as Record<string, unknown>).mcpClientManager =
         mockClientManager;
 
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
       await Integration.syncFromGraph();
 
       assert.ok(managers.has("https://mcp-a.example.com"));
@@ -255,7 +269,11 @@ suite("Integration Actions", () => {
         ],
       });
 
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
       await Integration.refreshKnown();
 
       const known = controller.editor.integrations.known;
@@ -284,7 +302,11 @@ suite("Integration Actions", () => {
         knownStatus: "pending",
       });
 
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
       await Integration.refreshKnown();
 
       assert.strictEqual(integrationsController.knownStatus, "complete");
@@ -298,7 +320,11 @@ suite("Integration Actions", () => {
   suite("register", () => {
     test("returns error when known list is not available", async () => {
       const { controller, services } = createBind({ knownStatus: "pending" });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.register("https://example.com");
       assert.ok(result !== undefined && !ok(result), "Should return error");
@@ -306,7 +332,11 @@ suite("Integration Actions", () => {
 
     test("returns error when server is unknown", async () => {
       const { controller, services } = createBind({ knownStatus: "complete" });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.register("https://unknown.example.com");
       assert.ok(result !== undefined && !ok(result), "Should return error");
@@ -330,7 +360,11 @@ suite("Integration Actions", () => {
       ]);
 
       const { controller, services } = createBind({ known });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.register("https://reg.example.com");
       assert.ok(result !== undefined && !ok(result), "Should return error");
@@ -358,7 +392,11 @@ suite("Integration Actions", () => {
         known,
         editor,
       });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.register("https://new.example.com");
       assert.ok(
@@ -385,7 +423,11 @@ suite("Integration Actions", () => {
       ]);
 
       const { controller, services } = createBind({ known, editor: null });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.register(
         "https://no-editor.example.com"
@@ -401,7 +443,11 @@ suite("Integration Actions", () => {
   suite("unregister", () => {
     test("returns error when known list is not available", async () => {
       const { controller, services } = createBind({ knownStatus: "pending" });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.unregister("https://example.com");
       assert.ok(result !== undefined && !ok(result));
@@ -409,7 +455,11 @@ suite("Integration Actions", () => {
 
     test("returns error when server is unknown", async () => {
       const { controller, services } = createBind({});
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.unregister(
         "https://unknown.example.com"
@@ -435,7 +485,11 @@ suite("Integration Actions", () => {
       ]);
 
       const { controller, services } = createBind({ known });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.unregister("https://unreg.example.com");
       assert.ok(result !== undefined && !ok(result));
@@ -459,7 +513,11 @@ suite("Integration Actions", () => {
       ]);
 
       const { controller, services } = createBind({ known, editor: null });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.unregister(
         "https://no-editor.example.com"
@@ -502,7 +560,11 @@ suite("Integration Actions", () => {
       ]);
 
       const { controller, services } = createBind({ known, editor });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.unregister(
         "https://to-remove.example.com"
@@ -530,7 +592,11 @@ suite("Integration Actions", () => {
         editor,
         storedServers,
       });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.add(
         "https://new-mcp.example.com",
@@ -560,7 +626,11 @@ suite("Integration Actions", () => {
   suite("remove", () => {
     test("returns error when known list is not available", async () => {
       const { controller, services } = createBind({ knownStatus: "pending" });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.remove("https://example.com");
       assert.ok(result !== undefined && !ok(result));
@@ -568,7 +638,11 @@ suite("Integration Actions", () => {
 
     test("returns error when server is unknown", async () => {
       const { controller, services } = createBind({});
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.remove("https://unknown.example.com");
       assert.ok(result !== undefined && !ok(result));
@@ -619,7 +693,11 @@ suite("Integration Actions", () => {
         editor,
         storedServers,
       });
-      Integration.bind({ controller, services });
+      Integration.bind({
+        controller,
+        services,
+        env: createMockEnvironment(defaultRuntimeFlags),
+      });
 
       const result = await Integration.remove("https://removable.example.com");
       assert.ok(

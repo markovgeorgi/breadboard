@@ -18,6 +18,8 @@ import { GraphDescriptor } from "@breadboard-ai/types";
 import type { ConfigChangeContext } from "../../../../src/sca/controller/subcontrollers/editor/graph/graph-controller.js";
 import { makeFreshGraph } from "../../helpers/index.js";
 import { onPendingGraphReplacement } from "../../../../src/sca/actions/graph/triggers.js";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
+import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 
 function editorChange(graphActions: typeof Graph) {
   return new Promise<GraphDescriptor>((res) => {
@@ -45,6 +47,7 @@ suite("Graph Actions", () => {
             },
           },
         } as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
     });
 
@@ -98,6 +101,7 @@ suite("Graph Actions", () => {
             theme: { updateHash() {} },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
     });
 

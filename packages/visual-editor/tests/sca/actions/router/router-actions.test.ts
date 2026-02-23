@@ -8,6 +8,8 @@ import { suite, test, beforeEach } from "node:test";
 import assert from "node:assert";
 import { coordination } from "../../../../src/sca/coordination.js";
 import * as routerActions from "../../../../src/sca/actions/router/router-actions.js";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
+import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 
 suite("Router Actions", () => {
   beforeEach(() => {
@@ -27,6 +29,7 @@ suite("Router Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await routerActions.updateFromPopstate();
@@ -52,6 +55,7 @@ suite("Router Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await routerActions.init();

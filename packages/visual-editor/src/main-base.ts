@@ -150,13 +150,13 @@ abstract class MainBase extends SignalWatcher(LitElement) {
         this.sca.services.signinAdapter
           .checkAppAccess()
           .then(this.handleAppAccessCheckResult.bind(this));
-        this.sca.services.shellHost
+        this.sca.env.shellHost
           .validateScopes()
           .then(this.handleValidateScopesResult.bind(this));
       }
     });
 
-    if (this.sca.services.globalConfig.ENABLE_EMAIL_OPT_IN) {
+    if (this.sca.env.deploymentConfig.ENABLE_EMAIL_OPT_IN) {
       this.sca.services.emailPrefsManager.refreshPrefs().then(() => {
         if (
           this.sca.services.emailPrefsManager.prefsValid &&
@@ -170,7 +170,7 @@ abstract class MainBase extends SignalWatcher(LitElement) {
     // Admin — side-effect: exposes `window.o` when URL has #owner-tools.
     new Admin(
       args,
-      this.sca.services.globalConfig,
+      this.sca.env,
       this.sca.services.googleDriveClient,
       this.sca.services.signinAdapter
     );
@@ -284,7 +284,7 @@ abstract class MainBase extends SignalWatcher(LitElement) {
   async #checkSubscriptionStatus() {
     try {
       await this.sca.controller.isHydrated;
-      const flags = await this.sca.controller.global.flags.flags();
+      const flags = await this.sca.env.flags.flags();
 
       if (this.sca.services.signinAdapter.stateSignal?.status === "signedin") {
         if (
@@ -704,13 +704,13 @@ abstract class MainBase extends SignalWatcher(LitElement) {
 
   protected renderNotebookLmPicker() {
     if (
-      Utils.Helpers.isHydrating(
-        () => this.sca.controller.global.flags?.enableNotebookLm
+      Utils.Helpers.isHydrating(() =>
+        this.sca.env.flags.get("enableNotebookLm")
       )
     ) {
       return nothing;
     }
-    if (!this.sca.controller.global.flags?.enableNotebookLm) {
+    if (!this.sca.env.flags.get("enableNotebookLm")) {
       return nothing;
     }
     return html`<bb-notebooklm-picker></bb-notebooklm-picker>`;
@@ -737,7 +737,7 @@ abstract class MainBase extends SignalWatcher(LitElement) {
 
     if ((await this.sca.services.signinAdapter.state) === "signedin") {
       if (await verifyScopes()) {
-        if (!this.sca.services.guestConfig.consentMessage) {
+        if (!this.sca.env.guestConfig.consentMessage) {
           return "success";
         }
         if (checkSignInConsent()) {
@@ -779,7 +779,7 @@ abstract class MainBase extends SignalWatcher(LitElement) {
     return html`
       <bb-sign-in-modal
         ${ref(this.signInModalRef)}
-        .consentMessage=${this.sca.services.guestConfig.consentMessage}
+        .consentMessage=${this.sca.env.guestConfig.consentMessage}
         .blurBackground=${blurBackground}
         @bbmodaldismissed=${() => {
           this.sca.controller.global.main.show.delete("SignInModal");

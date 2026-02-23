@@ -8,6 +8,8 @@ import { suite, test, beforeEach, afterEach } from "node:test";
 import assert from "node:assert";
 import { coordination } from "../../../../src/sca/coordination.js";
 import * as shellActions from "../../../../src/sca/actions/shell/shell-actions.js";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
+import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 
 suite("Shell Actions", () => {
   let originalWindow: typeof globalThis.window;
@@ -51,6 +53,7 @@ suite("Shell Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await shellActions.updatePageTitle();
@@ -94,6 +97,7 @@ suite("Shell Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await shellActions.updatePageTitle();
@@ -136,6 +140,7 @@ suite("Shell Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await shellActions.updatePageTitle();

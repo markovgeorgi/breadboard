@@ -19,6 +19,8 @@ import {
 import { AgentService } from "../../../../src/a2/agent/agent-service.js";
 import type { WaitForInputEvent } from "../../../../src/a2/agent/agent-event.js";
 import { setDOM, unsetDOM } from "../../../fake-dom.js";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
+import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -55,7 +57,11 @@ suite("graph-editing-agent-actions", () => {
 
   test("resolveGraphEditingInput returns false when no pending resolve", async () => {
     const controller = await makeControllerStub("GEA_act_1");
-    bind({ controller, services: makeServicesStub() });
+    bind({
+      controller,
+      services: makeServicesStub(),
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
 
     const result = resolveGraphEditingInput("hello");
     assert.strictEqual(result, false);
@@ -65,7 +71,11 @@ suite("graph-editing-agent-actions", () => {
 
   test("resetGraphEditingAgent resets controller state", async () => {
     const controller = await makeControllerStub("GEA_act_2");
-    bind({ controller, services: makeServicesStub() });
+    bind({
+      controller,
+      services: makeServicesStub(),
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
     const agent = controller.editor.graphEditingAgent;
 
     // Set some state
@@ -90,7 +100,11 @@ suite("graph-editing-agent-actions", () => {
 
   test("resetGraphEditingAgent is safe to call multiple times", async () => {
     const controller = await makeControllerStub("GEA_act_3");
-    bind({ controller, services: makeServicesStub() });
+    bind({
+      controller,
+      services: makeServicesStub(),
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
 
     resetGraphEditingAgent();
     resetGraphEditingAgent();
@@ -102,7 +116,11 @@ suite("graph-editing-agent-actions", () => {
   test("startGraphEditingAgent is idempotent when loop is already running", async () => {
     const controller = await makeControllerStub("GEA_act_4");
     const services = makeServicesStub();
-    bind({ controller, services });
+    bind({
+      controller,
+      services,
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
 
     controller.editor.graphEditingAgent.loopRunning = true;
     await controller.editor.graphEditingAgent.isSettled;
@@ -123,7 +141,11 @@ suite("graph-editing-agent-actions", () => {
   test("startGraphEditingAgent sets loopRunning to true", async () => {
     const controller = await makeControllerStub("GEA_act_5");
     const services = makeServicesStub();
-    bind({ controller, services });
+    bind({
+      controller,
+      services,
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
 
     startGraphEditingAgent("Build something");
 
@@ -133,7 +155,11 @@ suite("graph-editing-agent-actions", () => {
   test("startGraphEditingAgent creates a run via AgentService", async () => {
     const controller = await makeControllerStub("GEA_act_6");
     const services = makeServicesStub();
-    bind({ controller, services });
+    bind({
+      controller,
+      services,
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
 
     const startRunSpy = mock.method(services.agentService, "startRun");
 
@@ -152,7 +178,11 @@ suite("graph-editing-agent-actions", () => {
   test("thought events are wired to controller", async () => {
     const controller = await makeControllerStub("GEA_act_7");
     const services = makeServicesStub();
-    bind({ controller, services });
+    bind({
+      controller,
+      services,
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
     const agent = controller.editor.graphEditingAgent;
 
     // Create a run handle directly and wire it like the action does
@@ -182,7 +212,11 @@ suite("graph-editing-agent-actions", () => {
   test("functionCall events add system messages for non-wait functions", async () => {
     const controller = await makeControllerStub("GEA_act_8");
     const services = makeServicesStub();
-    bind({ controller, services });
+    bind({
+      controller,
+      services,
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
     const agent = controller.editor.graphEditingAgent;
 
     // Create a run handle directly and wire it like the action does
@@ -244,7 +278,11 @@ suite("graph-editing-agent-actions", () => {
   test("waitForInput handler sets waiting state and adds model message", async () => {
     const controller = await makeControllerStub("GEA_act_9");
     const services = makeServicesStub();
-    bind({ controller, services });
+    bind({
+      controller,
+      services,
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
     const agent = controller.editor.graphEditingAgent;
 
     const handle = services.agentService.startRun({
@@ -305,7 +343,11 @@ suite("graph-editing-agent-actions", () => {
   test("waitForInput handler Promise resolves with ChatResponse", async () => {
     const controller = await makeControllerStub("GEA_act_10");
     const services = makeServicesStub();
-    bind({ controller, services });
+    bind({
+      controller,
+      services,
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
     const agent = controller.editor.graphEditingAgent;
 
     const handle = services.agentService.startRun({
@@ -360,7 +402,11 @@ suite("graph-editing-agent-actions", () => {
   test("suspend round-trip via bridge: suspend → resolve → value returned", async () => {
     const controller = await makeControllerStub("GEA_act_11");
     const services = makeServicesStub();
-    bind({ controller, services });
+    bind({
+      controller,
+      services,
+      env: createMockEnvironment(defaultRuntimeFlags),
+    });
     const agent = controller.editor.graphEditingAgent;
 
     const handle = services.agentService.startRun({

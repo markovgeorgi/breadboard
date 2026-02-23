@@ -10,6 +10,8 @@ import { coordination } from "../../../../src/sca/coordination.js";
 import * as stepActions from "../../../../src/sca/actions/step/step-actions.js";
 import { ToastType } from "../../../../src/ui/events/events.js";
 import { setDOM, unsetDOM } from "../../../fake-dom.js";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
+import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 
 suite("Step Actions", () => {
   beforeEach(() => {
@@ -62,6 +64,7 @@ suite("Step Actions", () => {
       stepActions.bind({
         services: {} as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingNodeEdit();
@@ -113,6 +116,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingNodeEdit();
@@ -150,6 +154,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingNodeEdit();
@@ -205,6 +210,7 @@ suite("Step Actions", () => {
           },
         } as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingAssetEdit();
@@ -249,6 +255,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingAssetEdit();
@@ -286,6 +293,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingAssetEdit();
@@ -331,6 +339,7 @@ suite("Step Actions", () => {
       stepActions.bind({
         services: {} as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingAssetEdit();
@@ -388,6 +397,7 @@ suite("Step Actions", () => {
       stepActions.bind({
         services: {} as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingAssetEdit();
@@ -451,6 +461,7 @@ suite("Step Actions", () => {
       stepActions.bind({
         services: {} as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingAssetEdit();
@@ -526,6 +537,7 @@ suite("Step Actions", () => {
           },
         } as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingAssetEdit();
@@ -599,6 +611,7 @@ suite("Step Actions", () => {
           },
         } as never,
         controller: mockController as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingAssetEdit();
@@ -645,6 +658,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingAssetEdit();
@@ -686,6 +700,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingNodeEdit();
@@ -720,6 +735,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       // Should not throw
@@ -764,6 +780,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingEditsForNodeAction();
@@ -809,6 +826,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingEditsForNodeAction();
@@ -847,6 +865,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingEditsForNodeAction();
@@ -903,6 +922,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingEditsForNodeAction();
@@ -943,6 +963,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingEditsForNodeAction();
@@ -1008,6 +1029,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingEditsForNodeAction();
@@ -1072,6 +1094,7 @@ suite("Step Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await stepActions.applyPendingEditsForNodeAction();
@@ -1102,13 +1125,16 @@ suite("Step Actions", () => {
         },
       };
 
+      const env = createMockEnvironment(defaultRuntimeFlags);
       stepActions.bind({
-        services: {
+        services: {} as never,
+        controller: mockController as never,
+        env: {
+          ...env,
           shellHost: {
             getDriveCollectorFile: async () => ({ ok: true, id: "sheet-xyz" }),
-          },
-        } as never,
-        controller: mockController as never,
+          } as never,
+        },
       });
 
       await stepActions.lookupMemorySheet();
@@ -1137,13 +1163,16 @@ suite("Step Actions", () => {
         },
       };
 
+      const env = createMockEnvironment(defaultRuntimeFlags);
       stepActions.bind({
-        services: {
+        services: {} as never,
+        controller: mockController as never,
+        env: {
+          ...env,
           shellHost: {
             getDriveCollectorFile: async () => ({ ok: false }),
-          },
-        } as never,
-        controller: mockController as never,
+          } as never,
+        },
       });
 
       await stepActions.lookupMemorySheet();
@@ -1174,16 +1203,19 @@ suite("Step Actions", () => {
         },
       };
 
+      const env = createMockEnvironment(defaultRuntimeFlags);
       stepActions.bind({
-        services: {
+        services: {} as never,
+        controller: mockController as never,
+        env: {
+          ...env,
           shellHost: {
             getDriveCollectorFile: async () => {
               apiCalled = true;
               return { ok: true, id: "should-not-reach" };
             },
-          },
-        } as never,
-        controller: mockController as never,
+          } as never,
+        },
       });
 
       await stepActions.lookupMemorySheet();
@@ -1217,15 +1249,18 @@ suite("Step Actions", () => {
         },
       };
 
+      const env = createMockEnvironment(defaultRuntimeFlags);
       stepActions.bind({
-        services: {
+        services: {} as never,
+        controller: mockController as never,
+        env: {
+          ...env,
           shellHost: {
             getDriveCollectorFile: async () => {
               throw new Error("Network error");
             },
-          },
-        } as never,
-        controller: mockController as never,
+          } as never,
+        },
       });
 
       await stepActions.lookupMemorySheet();
@@ -1256,8 +1291,12 @@ suite("Step Actions", () => {
         },
       };
 
+      const env = createMockEnvironment(defaultRuntimeFlags);
       stepActions.bind({
-        services: {
+        services: {} as never,
+        controller: mockController as never,
+        env: {
+          ...env,
           shellHost: {
             getDriveCollectorFile: async (
               _mimeType: string,
@@ -1266,9 +1305,8 @@ suite("Step Actions", () => {
               capturedGraphId = graphId;
               return { ok: true, id: "sheet-1" };
             },
-          },
-        } as never,
-        controller: mockController as never,
+          } as never,
+        },
       });
 
       await stepActions.lookupMemorySheet();

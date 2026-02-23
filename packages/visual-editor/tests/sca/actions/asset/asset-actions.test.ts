@@ -19,6 +19,8 @@ import { onGraphVersionChange } from "../../../../src/sca/actions/asset/triggers
 import { StateEvent } from "../../../../src/ui/events/events.js";
 import { coordination } from "../../../../src/sca/coordination.js";
 import { setDOM, unsetDOM } from "../../../fake-dom.js";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
+import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 
 suite("Asset Actions", () => {
   suite("syncFromGraph", () => {
@@ -48,6 +50,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Asset.syncFromGraph();
@@ -95,6 +98,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Asset.syncFromGraph();
@@ -140,6 +144,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await Asset.syncFromGraph();
@@ -169,6 +174,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await Asset.update("test.txt", "New Title");
@@ -202,6 +208,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await Asset.update("no-metadata.txt", "New Title");
@@ -230,6 +237,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await Asset.update("nonexistent.txt", "New Title");
@@ -273,6 +281,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await Asset.update("updatable.txt", "New Title");
@@ -338,6 +347,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const newData = [
@@ -422,6 +432,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const newData = [{ role: "user" as const, parts: [{ text: "new" }] }];
@@ -463,6 +474,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const newData = [{ role: "user" as const, parts: [{ text: "data" }] }];
@@ -503,6 +515,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       // No data argument — title-only path
@@ -641,6 +654,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await Asset.addGraphAsset({
@@ -671,6 +685,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await Asset.addGraphAsset({
@@ -703,6 +718,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       // Parallel add — mirrors the real caller in asset.ts AddRoute
@@ -749,6 +765,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await Asset.addGraphAsset({
@@ -794,6 +811,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await Asset.addGraphAsset({
@@ -838,6 +856,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await Asset.removeGraphAsset("test.txt");
@@ -879,6 +898,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await Asset.removeGraphAsset("removable.txt");
@@ -915,6 +935,7 @@ suite("Asset Actions", () => {
             },
           },
         } as unknown as AppController,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const result = await Asset.removeGraphAsset("some-asset.txt");
@@ -1108,6 +1129,7 @@ suite("Asset Actions — Event-Triggered", () => {
           }),
         },
       } as unknown as AppServices,
+      env: createMockEnvironment(defaultRuntimeFlags),
     });
   }
 
@@ -1313,6 +1335,7 @@ suite("Asset Actions — Event-Triggered", () => {
             }),
           },
         } as unknown as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const evt = new StateEvent({
@@ -1384,6 +1407,7 @@ suite("Asset Actions — Event-Triggered", () => {
             }),
           },
         } as unknown as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const evt = new StateEvent({

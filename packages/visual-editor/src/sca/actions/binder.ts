@@ -6,6 +6,7 @@
 
 import { type AppController } from "../controller/controller.js";
 import { type AppServices } from "../services/services.js";
+import type { AppEnvironment } from "../environment/environment.js";
 import { ToastType } from "../types.js";
 import { STATUS } from "../types.js";
 
@@ -28,8 +29,15 @@ export function isFocusedOnGraphRenderer(evt: KeyboardEvent): boolean {
 }
 
 export type ActionBind = {
+  /** The application controller tree (editor, global, run subcontrollers). */
   controller: AppController;
+  /** The stateless service layer (APIs, loaders, board servers). */
   services: AppServices;
+  /**
+   * The Environment — deployment config, feature flags, and host capabilities.
+   * Prefer `env.flags.get("flagName")` for reactive flag reads.
+   */
+  env: AppEnvironment;
 };
 
 type DefaultBindings = ActionBind;

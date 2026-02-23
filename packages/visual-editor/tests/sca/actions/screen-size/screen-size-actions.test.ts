@@ -12,6 +12,8 @@ import {
   NARROW_BREAKPOINT,
   MEDIUM_BREAKPOINT,
 } from "../../../../src/sca/controller/subcontrollers/global/screen-size-controller.js";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
+import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 
 suite("ScreenSize Actions", () => {
   let originalWindow: typeof globalThis.window;
@@ -55,6 +57,7 @@ suite("ScreenSize Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await screenSizeActions.updateScreenSize();
@@ -90,6 +93,7 @@ suite("ScreenSize Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await screenSizeActions.updateScreenSize();
@@ -120,6 +124,7 @@ suite("ScreenSize Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await screenSizeActions.updateScreenSize();
@@ -142,6 +147,7 @@ suite("ScreenSize Actions", () => {
             screenSize: {},
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       // Should not throw
@@ -176,6 +182,7 @@ suite("ScreenSize Actions", () => {
             },
           },
         } as never,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await screenSizeActions.init();

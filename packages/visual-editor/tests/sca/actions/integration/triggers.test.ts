@@ -9,6 +9,8 @@ import { suite, test } from "node:test";
 import { onGraphVersionChange } from "../../../../src/sca/actions/integration/triggers.js";
 import type { AppController } from "../../../../src/sca/controller/controller.js";
 import type { AppServices } from "../../../../src/sca/services/services.js";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
+import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 
 suite("Integration Triggers", () => {
   suite("onGraphVersionChange", () => {
@@ -20,6 +22,7 @@ suite("Integration Triggers", () => {
           },
         } as unknown as AppController,
         services: {} as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       };
 
       const trigger = onGraphVersionChange(bind);
@@ -36,6 +39,7 @@ suite("Integration Triggers", () => {
           },
         } as unknown as AppController,
         services: {} as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       };
 
       const trigger = onGraphVersionChange(bind);
@@ -55,6 +59,7 @@ suite("Integration Triggers", () => {
           editor: { graph: graphController },
         } as unknown as AppController,
         services: {} as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       };
 
       const trigger = onGraphVersionChange(bind);

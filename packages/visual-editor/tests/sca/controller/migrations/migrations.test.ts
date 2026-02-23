@@ -15,6 +15,7 @@ import {
   FlagController,
   StatusUpdatesController,
 } from "../../../../src/sca/controller/subcontrollers/global/global.js";
+import { EnvironmentFlags } from "../../../../src/sca/environment/environment-flags.js";
 import { IntegrationsController } from "../../../../src/sca/controller/subcontrollers/editor/integrations/integrations.js";
 
 suite("Migrations", () => {
@@ -79,17 +80,24 @@ suite("Migrations", () => {
     await oldStore.override("agentMode", true);
     await oldStore.override("consistentUI", true);
 
+    const envFlags = new EnvironmentFlags(
+      defaultRuntimeFlags,
+      "Migration_EnvFlags",
+      "Migration_EnvFlags_Persist"
+    );
+    await envFlags.isHydrated;
     const flagController = new FlagController(
       "Flag_Migration",
       "FlagController",
-      defaultRuntimeFlags
+      envFlags
     );
     await flagController.isHydrated;
 
     await Migrations.flagsMigration(flagController, defaultRuntimeFlags);
     await flagController.isSettled;
+    await envFlags.isSettled;
 
-    let overrides = await flagController.overrides();
+    let overrides = await envFlags.overrides();
     assert.deepStrictEqual(overrides, {
       agentMode: true,
       consistentUI: true,
@@ -101,7 +109,7 @@ suite("Migrations", () => {
     await Migrations.flagsMigration(flagController, defaultRuntimeFlags);
     await flagController.isSettled;
 
-    overrides = await flagController.overrides();
+    overrides = await envFlags.overrides();
     assert.deepStrictEqual(overrides, {
       agentMode: true,
       consistentUI: true,

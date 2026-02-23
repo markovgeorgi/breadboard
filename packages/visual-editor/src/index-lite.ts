@@ -571,7 +571,7 @@ export class LiteMain extends MainBase implements LiteEditInputController {
   protected renderNoAccessModal() {
     const content = getNoAccessModalContent(
       this.accessStatus,
-      this.sca.services.guestConfig
+      this.sca.env.guestConfig
     );
     if (!content) return nothing;
     const { title, message } = content;
@@ -650,7 +650,7 @@ export class LiteMain extends MainBase implements LiteEditInputController {
         html`<a
           class="w-400 md-title-small sans-flex unvaried"
           id="open-advanced-editor"
-          href="${this.sca.services.guestConfig.advancedEditorOrigin ||
+          href="${this.sca.env.guestConfig.advancedEditorOrigin ||
           this.hostOrigin}?mode=canvas&flow=${this.#graph?.url}"
           target="_blank"
         >
@@ -709,7 +709,7 @@ export class LiteMain extends MainBase implements LiteEditInputController {
         .graphTopologyUpdateId=${this.graphTopologyUpdateId}
         .isMine=${!this.sca.controller.editor.graph.readOnly}
         .readOnly=${true}
-        .runtimeFlags=${this.sca.controller.global.flags}
+        .runtimeFlags=${this.sca.env.flags}
         .showGDrive=${this.sca.services.signinAdapter.stateSignal?.status ===
         "signedin"}
         .status=${renderValues.runStatus}

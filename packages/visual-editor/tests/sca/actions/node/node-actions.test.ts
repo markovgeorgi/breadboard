@@ -24,6 +24,7 @@ import { type AppServices } from "../../../../src/sca/services/services.js";
 import { setDOM, unsetDOM } from "../../../fake-dom.js";
 import { defaultRuntimeFlags } from "../../controller/data/default-flags.js";
 import { createMockEditor } from "../../helpers/mock-controller.js";
+import { createMockEnvironment } from "../../helpers/mock-environment.js";
 import { EditableGraph } from "@breadboard-ai/types";
 import { StateEvent } from "../../../../src/ui/events/events.js";
 import { coordination } from "../../../../src/sca/coordination.js";
@@ -36,12 +37,14 @@ const noopDescriber: NodeDescriber = async () => ({
   outputSchema: { type: "object" },
 });
 
+const env = createMockEnvironment(defaultRuntimeFlags);
+
 suite("Node Actions", () => {
   let controller: ReturnType<typeof appController>;
 
   before(async () => {
     setDOM();
-    controller = appController(defaultRuntimeFlags);
+    controller = appController(env);
     await controller.isHydrated;
   });
 
@@ -82,7 +85,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(createMockEditor());
       controller.editor.graph.readOnly = true;
 
@@ -111,7 +114,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       controller.editor.graph.setEditor(null);
       controller.editor.graph.readOnly = false;
 
@@ -131,8 +134,8 @@ suite("Node Actions", () => {
 
     test("skips when outputTemplates disabled AND title user-modified", async () => {
       let autonameCalled = false;
-      const originalFlags = controller.global.flags.flags;
-      controller.global.flags.flags = async () => ({
+      const originalFlags = env.flags.flags;
+      env.flags.flags = async () => ({
         ...defaultRuntimeFlags,
         outputTemplates: false,
       });
@@ -146,7 +149,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(createMockEditor());
       controller.editor.graph.readOnly = false;
 
@@ -164,7 +167,7 @@ suite("Node Actions", () => {
       );
 
       // Restore
-      controller.global.flags.flags = originalFlags;
+      env.flags.flags = originalFlags;
     });
 
     test("calls autonamer when conditions are met", async () => {
@@ -181,7 +184,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(createMockEditor());
       controller.editor.graph.readOnly = false;
 
@@ -208,7 +211,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(createMockEditor());
       controller.editor.graph.readOnly = false;
 
@@ -235,7 +238,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(createMockEditor());
       controller.editor.graph.readOnly = false;
 
@@ -259,7 +262,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(createMockEditor());
       controller.editor.graph.readOnly = false;
 
@@ -303,7 +306,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(mockEditor);
       controller.editor.graph.readOnly = false;
 
@@ -342,7 +345,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(mockEditor);
       controller.editor.graph.readOnly = false;
 
@@ -393,7 +396,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(mockEditor);
       controller.editor.graph.readOnly = false;
 
@@ -439,7 +442,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(mockEditor);
       controller.editor.graph.readOnly = false;
 
@@ -483,13 +486,13 @@ suite("Node Actions", () => {
       } as unknown as AppServices;
 
       // Must set outputTemplates: true for action to proceed when titleUserModified
-      const originalFlags = controller.global.flags.flags;
-      controller.global.flags.flags = async () => ({
+      const originalFlags = env.flags.flags;
+      env.flags.flags = async () => ({
         ...defaultRuntimeFlags,
         outputTemplates: true,
       });
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(mockEditor);
       controller.editor.graph.readOnly = false;
 
@@ -510,7 +513,7 @@ suite("Node Actions", () => {
       );
 
       // Restore
-      controller.global.flags.flags = originalFlags;
+      env.flags.flags = originalFlags;
     });
   });
 
@@ -527,7 +530,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(createMockEditor());
       controller.editor.graph.readOnly = false;
       controller.editor.graph.lastNodeConfigChange = null;
@@ -556,7 +559,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(createMockEditor());
       controller.editor.graph.readOnly = false;
 
@@ -578,8 +581,8 @@ suite("Node Actions", () => {
     test("respects titleUserModified from lastNodeConfigChange", async () => {
       let autonameCalled = false;
 
-      const originalFlags = controller.global.flags.flags;
-      controller.global.flags.flags = async () => ({
+      const originalFlags = env.flags.flags;
+      env.flags.flags = async () => ({
         ...defaultRuntimeFlags,
         outputTemplates: false,
       });
@@ -593,7 +596,7 @@ suite("Node Actions", () => {
         },
       } as unknown as AppServices;
 
-      NodeActions.bind({ controller, services });
+      NodeActions.bind({ controller, services, env });
       setEditorAndInit(createMockEditor());
       controller.editor.graph.readOnly = false;
 
@@ -615,7 +618,7 @@ suite("Node Actions", () => {
         "autoname should not be called when user modified title"
       );
 
-      controller.global.flags.flags = originalFlags;
+      env.flags.flags = originalFlags;
     });
   });
 });
@@ -674,6 +677,7 @@ suite("Node Actions — Event-Triggered", () => {
       services: {
         stateEventBus: new EventTarget(),
       } as unknown as AppServices,
+      env,
     });
   }
 
@@ -976,6 +980,7 @@ suite("Node Actions — Event-Triggered", () => {
         services: {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const evt = new StateEvent({
@@ -1088,6 +1093,7 @@ suite("Node Actions — Event-Triggered", () => {
         services: {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       const evt = new StateEvent({
@@ -1246,6 +1252,7 @@ suite("Node Actions — Keyboard", () => {
       services: {
         stateEventBus: new EventTarget(),
       } as unknown as AppServices,
+      env: createMockEnvironment(defaultRuntimeFlags),
     });
   }
 
@@ -1288,6 +1295,7 @@ suite("Node Actions — Keyboard", () => {
         services: {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await NodeActionsModule.onDelete();
@@ -1551,6 +1559,7 @@ suite("Node Actions — Keyboard", () => {
         services: {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await NodeActionsModule.onCut();
@@ -1648,6 +1657,7 @@ suite("Node Actions — Keyboard", () => {
         services: {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await NodeActionsModule.onDuplicate();
@@ -1827,6 +1837,7 @@ suite("Node Actions — Keyboard", () => {
         services: {
           stateEventBus: new EventTarget(),
         } as unknown as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await NodeActionsModule.onPaste();
@@ -1925,6 +1936,7 @@ suite("Node Actions — Keyboard", () => {
             load: async () => ({ success: false }),
           },
         } as unknown as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await NodeActionsModule.onPaste();
@@ -2014,6 +2026,7 @@ suite("Node Actions — Keyboard", () => {
             load: async () => ({ success: false }),
           },
         } as unknown as AppServices,
+        env: createMockEnvironment(defaultRuntimeFlags),
       });
 
       await NodeActionsModule.onPaste();
@@ -2055,7 +2068,7 @@ suite("onNodeAction", () => {
       stateEventBus: new EventTarget(),
     } as unknown as AppServices;
 
-    NodeActionsModule.bind({ controller, services });
+    NodeActionsModule.bind({ controller, services, env });
 
     return { setNodeActionRequestFn };
   }
