@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { suite, test, beforeEach, afterEach } from "node:test";
+import { suite, test, beforeEach, afterEach, mock } from "node:test";
 import assert from "node:assert";
 import { coordination } from "../../../../src/sca/coordination.js";
 import * as shellActions from "../../../../src/sca/actions/shell/shell-actions.js";
@@ -19,31 +19,17 @@ suite("Shell Actions", () => {
 
   afterEach(() => {
     globalThis.window = originalWindow;
+    coordination.reset();
   });
 
   suite("updatePageTitle", () => {
     test("sets page title with graph title when present", async () => {
-      let capturedTitle = "";
-
-      // Mock window.document.title - the action uses window.document.title
-      const mockWindow = {
-        document: {
-          get title() {
-            return capturedTitle;
-          },
-          set title(val: string) {
-            capturedTitle = val;
-          },
-        },
-      };
-      Object.defineProperty(globalThis, "window", {
-        value: mockWindow,
-        writable: true,
-        configurable: true,
-      });
+      const setTitle = mock.fn();
 
       shellActions.bind({
-        services: {} as never,
+        services: {
+          shellHost: { setTitle },
+        } as never,
         controller: {
           editor: {
             graph: {
@@ -55,38 +41,21 @@ suite("Shell Actions", () => {
 
       await shellActions.updatePageTitle();
 
-      // Title should include the graph title
-      assert.ok(
-        capturedTitle.includes("My Test Board"),
-        `Expected title to include 'My Test Board', got: ${capturedTitle}`
-      );
-      assert.ok(
-        capturedTitle.includes(" - "),
-        `Expected title to have separator, got: ${capturedTitle}`
+      // Verify shellHost.setTitle was called with the graph title and the tag
+      assert.strictEqual(setTitle.mock.calls.length, 1);
+      assert.strictEqual(
+        setTitle.mock.calls[0].arguments[0],
+        "My Test Board - APP_NAME [Experiment]"
       );
     });
 
     test("sets default title when graph title is empty", async () => {
-      let capturedTitle = "";
-
-      const mockWindow = {
-        document: {
-          get title() {
-            return capturedTitle;
-          },
-          set title(val: string) {
-            capturedTitle = val;
-          },
-        },
-      };
-      Object.defineProperty(globalThis, "window", {
-        value: mockWindow,
-        writable: true,
-        configurable: true,
-      });
+      const setTitle = mock.fn();
 
       shellActions.bind({
-        services: {} as never,
+        services: {
+          shellHost: { setTitle },
+        } as never,
         controller: {
           editor: {
             graph: {
@@ -98,37 +67,21 @@ suite("Shell Actions", () => {
 
       await shellActions.updatePageTitle();
 
-      // Title should not include separator when no graph title (just suffix)
-      assert.ok(capturedTitle.length > 0, "Title should be set");
-      // When title is empty, it should just be the suffix
-      assert.ok(
-        !capturedTitle.includes(" - ") ||
-          capturedTitle.startsWith(" - ") === false,
-        "Title should not have graph title prefix"
+      // Verify shellHost.setTitle was called with just the tag
+      assert.strictEqual(setTitle.mock.calls.length, 1);
+      assert.strictEqual(
+        setTitle.mock.calls[0].arguments[0],
+        "APP_NAME [Experiment]"
       );
     });
 
     test("trims whitespace from graph title", async () => {
-      let capturedTitle = "";
-
-      const mockWindow = {
-        document: {
-          get title() {
-            return capturedTitle;
-          },
-          set title(val: string) {
-            capturedTitle = val;
-          },
-        },
-      };
-      Object.defineProperty(globalThis, "window", {
-        value: mockWindow,
-        writable: true,
-        configurable: true,
-      });
+      const setTitle = mock.fn();
 
       shellActions.bind({
-        services: {} as never,
+        services: {
+          shellHost: { setTitle },
+        } as never,
         controller: {
           editor: {
             graph: {
@@ -140,10 +93,11 @@ suite("Shell Actions", () => {
 
       await shellActions.updatePageTitle();
 
-      // Title should not have leading/trailing whitespace before separator
-      assert.ok(
-        capturedTitle.startsWith("Whitespace Board - "),
-        `Expected title to start with trimmed name, got: ${capturedTitle}`
+      // Verify shellHost.setTitle was called with the trimmed title and the tag
+      assert.strictEqual(setTitle.mock.calls.length, 1);
+      assert.strictEqual(
+        setTitle.mock.calls[0].arguments[0],
+        "Whitespace Board - APP_NAME [Experiment]"
       );
     });
   });
