@@ -28,7 +28,7 @@ function makeRuntimeConfig(
         gitCommitHash: "abc123",
       },
       googleDrive: {
-        publishPermissions: [
+        broadPermissions: [
           { id: "perm-1", type: "domain", domain: "example.com" },
         ],
       },
@@ -155,22 +155,22 @@ suite("createEnvironment", () => {
     assert.strictEqual(env.buildInfo.gitCommitHash, "abc123");
   });
 
-  test("googleDrive.publishPermissions comes from globalConfig", () => {
+  test("googleDrive.broadPermissions comes from globalConfig", () => {
     const config = makeRuntimeConfig();
     const env = createEnvironment(config, testFlags);
-    assert.strictEqual(env.googleDrive.publishPermissions.length, 1);
+    assert.strictEqual(env.googleDrive.broadPermissions.length, 1);
     assert.strictEqual(
-      (env.googleDrive.publishPermissions[0] as { domain?: string }).domain,
+      (env.googleDrive.broadPermissions[0] as { domain?: string }).domain,
       "example.com"
     );
   });
 
-  test("googleDrive.publishPermissions defaults to empty array", () => {
+  test("googleDrive.broadPermissions defaults to empty array", () => {
     const config = makeRuntimeConfig();
-    // Remove publishPermissions from globalConfig
+    // Remove broadPermissions from globalConfig
     (config.globalConfig as Record<string, unknown>).googleDrive = {};
     const env = createEnvironment(config, testFlags);
-    assert.deepStrictEqual(env.googleDrive.publishPermissions, []);
+    assert.deepStrictEqual(env.googleDrive.broadPermissions, []);
   });
 
   test("googleDrive.apiEndpoint comes from CLIENT_DEPLOYMENT_CONFIG", () => {

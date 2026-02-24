@@ -28,7 +28,6 @@ import { baseColors } from "../../styles/host/base-colors.js";
 import { match } from "../../styles/host/match.js";
 import { type GoogleDriveSharePanel } from "../elements.js";
 import { CLIENT_DEPLOYMENT_CONFIG } from "../../config/client-deployment-configuration.js";
-import type { ShareVisibilitySelector } from "./share-visibility-selector.js";
 import "./share-visibility-selector.js";
 
 const APP_NAME = StringsHelper.forSection("Global").from("APP_NAME");
@@ -711,7 +710,7 @@ export class SharePanel extends SignalWatcher(LitElement) {
 
   #renderWritableContentsV1() {
     const shared =
-      this.#controller.hasPublicPermissions ||
+      this.#controller.hasBroadPermissions ||
       this.#controller.hasOtherPermissions;
     return [
       this.#controller.stale && shared ? this.#renderStaleBanner() : nothing,
@@ -731,7 +730,7 @@ export class SharePanel extends SignalWatcher(LitElement) {
 
   #renderWritableContentsV2() {
     const shared =
-      this.#controller.hasPublicPermissions ||
+      this.#controller.hasBroadPermissions ||
       this.#controller.hasOtherPermissions;
     return [
       this.#controller.stale && shared ? this.#renderStaleBannerV2() : nothing,
@@ -963,28 +962,8 @@ export class SharePanel extends SignalWatcher(LitElement) {
     `;
   }
 
-  get #domainRestricted(): boolean {
-    const perms = this.sca.env.googleDrive.publishPermissions;
-    return perms.length === 0 || perms.some((p) => p.type !== "anyone");
-  }
-
   #renderVisibilityDropdown() {
-    return html`<bb-share-visibility-selector
-      .value=${this.#controller.visibility}
-      .domainRestricted=${this.#domainRestricted}
-      .loading=${this.#controller.status === "changing-visibility"}
-      @change=${this.#onVisibilityChange}
-      @edit-access=${this.#onEditAccess}
-    ></bb-share-visibility-selector>`;
-  }
-
-  async #onVisibilityChange(event: Event) {
-    const selector = event.target as ShareVisibilitySelector;
-    await this.#actions.changeVisibility(selector.value);
-  }
-
-  async #onEditAccess() {
-    await this.#actions.viewSharePermissions();
+    return html`<bb-share-visibility-selector></bb-share-visibility-selector>`;
   }
 
   #renderPublishedSwitch() {
@@ -992,7 +971,7 @@ export class SharePanel extends SignalWatcher(LitElement) {
     if (status !== "ready" && status !== "changing-visibility") {
       return nothing;
     }
-    const published = this.#controller.hasPublicPermissions;
+    const published = this.#controller.hasBroadPermissions;
     const domain = this.#controller.userDomain;
     const { disallowPublicPublishing } = this.sca?.env.domains?.[domain] ?? {};
 

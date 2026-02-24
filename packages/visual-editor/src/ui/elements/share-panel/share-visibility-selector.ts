@@ -4,10 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { SignalWatcher } from "@lit-labs/signals";
+import { consume } from "@lit/context";
 import { css, html, LitElement, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
+import { scaContext } from "../../../sca/context/context.js";
 import type { VisibilityLevel } from "../../../sca/controller/subcontrollers/editor/share-controller.js";
+import { SCA } from "../../../sca/sca.js";
 import { icons } from "../../styles/icons.js";
 import { baseColors } from "../../styles/host/base-colors.js";
 import { match } from "../../styles/host/match.js";
@@ -17,10 +21,11 @@ interface Option {
   label: string;
   icon: string;
   subtitle: string;
+  disabled?: boolean;
 }
 
 @customElement("bb-share-visibility-selector")
-export class ShareVisibilitySelector extends LitElement {
+export class ShareVisibilitySelector extends SignalWatcher(LitElement) {
   static styles = [
     icons,
     baseColors,
@@ -150,9 +155,27 @@ export class ShareVisibilitySelector extends LitElement {
         width: 100%;
         text-align: left;
 
-        &:hover {
+        &:hover:not(:disabled) {
           background: light-dark(#f0f0f0, #3a3a3a);
         }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: default;
+        }
+      }
+
+      .option-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .option-disabled-reason {
+        font-size: 12px;
+        font-weight: 300;
+        line-height: 16px;
+        color: var(--light-dark-n-35);
       }
 
       .check-icon {
@@ -218,19 +241,29 @@ export class ShareVisibilitySelector extends LitElement {
     `,
   ];
 
-  @property()
-  accessor value: VisibilityLevel = "only-you";
-
-  @property({ type: Boolean })
-  accessor domainRestricted = false;
-
-  @property({ type: Boolean, reflect: true })
-  accessor loading = false;
+  @consume({ context: scaContext })
+  @property({ attribute: false })
+  accessor sca!: SCA;
 
   readonly #triggerRef = createRef<HTMLButtonElement>();
   readonly #dropdownRef = createRef<HTMLDivElement>();
 
+  get #share() {
+    return this.sca.controller.editor.share;
+  }
+
+  get #loading() {
+    return this.#share.status === "changing-visibility";
+  }
+
+  get #broadPermissionIsAnyone(): boolean {
+    return this.sca.env.googleDrive.broadPermissions.some(
+      (p) => p.type === "anyone"
+    );
+  }
+
   get #options(): Option[] {
+    const { broadPermissionsAllowed } = this.#share;
     return [
       {
         level: "only-you",
@@ -244,24 +277,30 @@ export class ShareVisibilitySelector extends LitElement {
         icon: "lock",
         subtitle: "Only people with access can open with the link",
       },
-      this.domainRestricted
+      this.#broadPermissionIsAnyone
         ? {
-            level: "anyone",
-            label: "Your Organization",
-            icon: "domain",
-            subtitle: "Anyone in your organization with the link can view",
-          }
-        : {
-            level: "anyone",
+            level: "broad",
             label: "Anyone with the link",
             icon: "public",
-            subtitle: "Anyone on the internet with the link can view",
+            subtitle: broadPermissionsAllowed
+              ? "Anyone on the internet with the link can view"
+              : `Disabled for ${this.#share.userDomain} users`,
+            disabled: !broadPermissionsAllowed,
+          }
+        : {
+            level: "broad",
+            label: "Your organization",
+            icon: "domain",
+            subtitle: broadPermissionsAllowed
+              ? "Anyone in your organization with the link can view"
+              : `Disabled for ${this.#share.userDomain} users`,
+            disabled: !broadPermissionsAllowed,
           },
     ];
   }
 
   render() {
-    const opt = this.#options.find((o) => o.level === this.value)!;
+    const opt = this.#options.find((o) => o.level === this.#share.visibility)!;
 
     return html`
       <div id="container">
@@ -274,16 +313,16 @@ export class ShareVisibilitySelector extends LitElement {
             ${ref(this.#triggerRef)}
             type="button"
             popovertarget="dropdown"
-            ?disabled=${this.loading}
+            ?disabled=${this.#loading}
           >
             <span id="label">${opt.label}</span>
             <span class="g-icon">arrow_drop_down</span>
           </button>
           <span id="subtitle">${opt.subtitle}</span>
         </div>
-        ${this.loading
+        ${this.#loading
           ? html`<span class="g-icon spinner">progress_activity</span>`
-          : this.value === "restricted"
+          : this.#share.visibility === "restricted"
             ? html`
                 <button id="edit-access-button" @click=${this.#onEditAccess}>
                   Edit access
@@ -300,15 +339,23 @@ export class ShareVisibilitySelector extends LitElement {
         ${this.#options.map(
           (opt) => html`
             <button
-              class="dropdown-option"
+              class="dropdown-option ${opt.disabled ? "disabled" : ""}"
+              ?disabled=${opt.disabled}
               @click=${() => this.#selectOption(opt.level)}
             >
               <span class="check-icon">
-                ${opt.level === this.value
+                ${opt.level === this.#share.visibility
                   ? html`<span class="g-icon">check</span>`
                   : nothing}
               </span>
-              ${opt.label}
+              <span class="option-content">
+                <span class="option-label">${opt.label}</span>
+                ${opt.disabled
+                  ? html`<span class="option-disabled-reason"
+                      >${opt.subtitle}</span
+                    >`
+                  : nothing}
+              </span>
             </button>
           `
         )}
@@ -335,17 +382,14 @@ export class ShareVisibilitySelector extends LitElement {
 
   #selectOption(newValue: VisibilityLevel) {
     this.#dropdownRef.value?.hidePopover();
-    if (newValue === this.value) {
+    if (newValue === this.#share.visibility) {
       return;
     }
-    this.value = newValue;
-    this.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
+    this.sca.actions.share.changeVisibility(newValue);
   }
 
   #onEditAccess() {
-    this.dispatchEvent(
-      new Event("edit-access", { bubbles: true, composed: true })
-    );
+    this.sca.actions.share.viewSharePermissions();
   }
 }
 

@@ -34,7 +34,7 @@ export type UnmanagedNotebookAssetProblem = {
 
 export type SharePanelStatus = "closed" | "open" | "native-share";
 
-export type VisibilityLevel = "only-you" | "restricted" | "anyone";
+export type VisibilityLevel = "only-you" | "restricted" | "broad";
 
 export type ViewerMode = "full" | "app-only";
 
@@ -66,9 +66,6 @@ export class ShareController extends RootController {
   accessor ownership: "unknown" | "owner" | "non-owner" = "unknown";
 
   @field()
-  accessor hasPublicPermissions = false;
-
-  @field()
   accessor editableVersion = "";
 
   @field()
@@ -76,19 +73,23 @@ export class ShareController extends RootController {
 
   get stale(): boolean {
     return (
-      (this.hasPublicPermissions || this.hasOtherPermissions) &&
+      (this.hasBroadPermissions || this.hasOtherPermissions) &&
       this.editableVersion !== this.sharedVersion &&
       this.editableVersion !== "" &&
       this.sharedVersion !== ""
     );
   }
+  @field()
+  accessor hasBroadPermissions = false;
 
   @field()
   accessor hasOtherPermissions = false;
 
   get visibility(): VisibilityLevel {
-    if (this.hasPublicPermissions) return "anyone";
+    // Check other (individual) permissions first: if specific people are
+    // shared, we show "restricted" even when broad permissions also exist.
     if (this.hasOtherPermissions) return "restricted";
+    if (this.hasBroadPermissions) return "broad";
     return "only-you";
   }
 
@@ -96,7 +97,7 @@ export class ShareController extends RootController {
   accessor userDomain = "";
 
   @field()
-  accessor publicPublishingAllowed = true;
+  accessor broadPermissionsAllowed = true;
 
   @field({ deep: false })
   accessor actualPermissions: gapi.client.drive.Permission[] = [];
@@ -134,12 +135,12 @@ export class ShareController extends RootController {
     this.panel = "closed";
     this.status = "initializing";
     this.ownership = "unknown";
-    this.hasPublicPermissions = false;
+    this.hasBroadPermissions = false;
     this.editableVersion = "";
     this.sharedVersion = "";
     this.hasOtherPermissions = false;
     this.userDomain = "";
-    this.publicPublishingAllowed = true;
+    this.broadPermissionsAllowed = true;
     this.actualPermissions = [];
     this.shareableFile = null;
     this.unmanagedAssetProblems = [];
