@@ -465,8 +465,8 @@ class Main extends MainBase {
       <form method="dialog">
         <h1>Oops, something went wrong</h1>
         <p class="share-content">
-          It has not been possible to open this app. Please ask the author to
-          check that the app was published successfully and then try again.
+          You need access to this Opal. Reach out to the owner to request
+          access, or switch to an account with access.
         </p>
       </form>
     </dialog>`;
