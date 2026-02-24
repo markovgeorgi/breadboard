@@ -640,6 +640,10 @@ export class OAuthBasedOpalShell implements OpalShellHostProtocol {
     );
   };
 
+  setTitle = (title: string | null): void => {
+    window.document.title = title ?? "";
+  };
+
   pickDriveFiles = async (
     options: PickDriveFilesOptions
   ): Promise<PickDriveFilesResult> => {

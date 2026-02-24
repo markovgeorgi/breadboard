@@ -152,4 +152,8 @@ class FakeModeOpalShell implements OpalShellHostProtocol {
   ): Promise<void> => {
     console.debug("[fake-mode] trackProperties skipped");
   };
+
+  setTitle = (title: string | null): void => {
+    window.document.title = title ?? "";
+  };
 }

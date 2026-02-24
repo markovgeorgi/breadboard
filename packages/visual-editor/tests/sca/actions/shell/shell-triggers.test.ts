@@ -25,7 +25,11 @@ suite("Shell Triggers", () => {
       const trigger = onTitleChange(mockBind as never);
       const result = trigger.condition();
 
-      assert.strictEqual(result, true, "Should return true when title exists");
+      assert.strictEqual(
+        result,
+        "My Board Title",
+        "Should return the title when it exists"
+      );
     });
 
     test("returns true when title is empty string", () => {
@@ -43,8 +47,8 @@ suite("Shell Triggers", () => {
       const trigger = onTitleChange(mockBind as never);
       const result = trigger.condition();
 
-      // Empty string !== null, so it returns true
-      assert.strictEqual(result, true, "Should return true for empty string");
+      // Empty string !== null, so it returns the empty string
+      assert.strictEqual(result, "", "Should return empty string");
     });
 
     test("returns false when title is null", () => {
@@ -56,11 +60,7 @@ suite("Shell Triggers", () => {
       const trigger = onTitleChange(mockBind as never);
       const result = trigger.condition();
 
-      assert.strictEqual(
-        result,
-        false,
-        "Should return false when title is null"
-      );
+      assert.strictEqual(result, null, "Should return null when title is null");
     });
 
     test("has correct trigger name", () => {
